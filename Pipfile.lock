@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "070eb54b8da33e510ce7bf2db602863dedfa82aefdd4dc5ffe32ec273c314de1"
+            "sha256": "576f805ab4a8cd1ff8fbac5d977cefe01c305536927472301eb6a61b69641eb1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -23,6 +23,13 @@
             ],
             "version": "==6.7"
         },
+        "cymysql": {
+            "hashes": [
+                "sha256:ac3990a2e2bc4dbea175d32a2f2f60d8e00d9127449b4aea50b5d499d0a5ba72"
+            ],
+            "index": "pypi",
+            "version": "==0.9.10"
+        },
         "flask": {
             "hashes": [
                 "sha256:2271c0070dbcb5275fad4a82e29f23ab92682dc45f9dfbc22c02ba9b9322ce48",
@@ -30,6 +37,14 @@
             ],
             "index": "pypi",
             "version": "==1.0.2"
+        },
+        "flask-sqlalchemy": {
+            "hashes": [
+                "sha256:3bc0fac969dd8c0ace01b32060f0c729565293302f0c4269beed154b46bec50b",
+                "sha256:5971b9852b5888655f11db634e87725a9031e170f37c0ce7851cf83497f56e53"
+            ],
+            "index": "pypi",
+            "version": "==2.3.2"
         },
         "itsdangerous": {
             "hashes": [
@@ -50,6 +65,12 @@
             ],
             "version": "==1.0"
         },
+        "sqlalchemy": {
+            "hashes": [
+                "sha256:2d5f08f714a886a1382c18be501e614bce50d362384dc089474019ce0768151c"
+            ],
+            "version": "==1.2.8"
+        },
         "werkzeug": {
             "hashes": [
                 "sha256:c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c",
@@ -59,10 +80,11 @@
         },
         "wtforms": {
             "hashes": [
-                "sha256:ffdf10bd1fa565b8233380cb77a304cd36fd55c73023e91d4b803c96bc11d46f"
+                "sha256:49c6dc46a188db98be7582046db35bae3e4701b71a2e8f4212873289cd51553a",
+                "sha256:88e9c32e37d7eae1bd032fd1771a88f17c7b7e671465705acd217fabdfbb1794"
             ],
             "index": "pypi",
-            "version": "==2.1"
+            "version": "==2.2"
         }
     },
     "develop": {}

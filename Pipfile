@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 flask = "*"
 wtforms = "*"
+flask-sqlalchemy = "*"
+cymysql = "*"
 
 [dev-packages]
 
