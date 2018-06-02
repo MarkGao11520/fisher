@@ -1,7 +1,8 @@
 """
 create by  gaowenfeng on  2018/6/1
 """
-from httper import HTTP
+from app.libs.httper import HTTP
+from flask import current_app
 
 __author__ = "gaowenfeng"
 
@@ -18,6 +19,11 @@ class YuShuBook:
         return HTTP.get(url)
 
     @classmethod
-    def search_by_key(cls, q, count=15, start=0):
-        url = cls.search_by_key_url.format(q, count, start)
+    def search_by_key(cls, q, page=1):
+        url = cls.search_by_key_url.format(q, current_app.config["PRE_PAGE"],
+                                           cls.calculate_start(page))
         return HTTP.get(url)
+
+    @staticmethod
+    def calculate_start(page):
+        return (page-1) * current_app.config["PRE_PAGE"]

@@ -1,29 +1,33 @@
 """
 create by  gaowenfeng on  2018/6/1
 """
-from flask import jsonify,Blueprint
-from helper import is_isbn_or_key
-from yushu_book import YuShuBook
+from flask import jsonify, request
+from app.libs.helper import is_isbn_or_key
+from app.spider.yushu_book import YuShuBook
+from app.forms.book import SearchForm
+
+from . import web
 
 
 __author__ = "gaowenfeng"
 
 
-# 实例化蓝图
-web = Blueprint('web', __name__)
-
-
-@web.route("/book/search/<q>/<page>")
-def search(q, page):
+@web.route("/book/search/")
+def search():
     """
     搜索书籍路由
-    :param q: 关键字 OR isbn
-    :param page: 页码
     """
+    form = SearchForm(request.args)
+    if not form.validate():
+        return jsonify(form.errors)
+
+    print(form.validate())
+    q = form.q.data.strip()
     isbn_or_key = is_isbn_or_key(q)
     if isbn_or_key == 'isbn':
         result = YuShuBook.search_by_isbn(q)
     else:
-        result = YuShuBook.search_by_key(q)
+        page = form.page.data
+        result = YuShuBook.search_by_key(q, page)
 
     return jsonify(result)

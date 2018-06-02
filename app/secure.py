@@ -5,4 +5,4 @@ __author__ = "gaowenfeng"
 
 DEBUG = True
 HOST = "0.0.0.0"
-PORT = 8080
+PORT = 8090
