@@ -21,7 +21,6 @@ def search():
     if not form.validate():
         return jsonify(form.errors)
 
-    print(form.validate())
     q = form.q.data.strip()
     isbn_or_key = is_isbn_or_key(q)
     if isbn_or_key == 'isbn':
