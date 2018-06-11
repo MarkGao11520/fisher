@@ -9,21 +9,33 @@ __author__ = "gaowenfeng"
 
 class YuShuBook:
 
-    search_by_isbn_url = "http://t.yushu.im/v2/book/search/isbn/{}"
+    search_by_isbn_url = "http://t.yushu.im/v2/book/isbn/{}"
 
     search_by_key_url = "http://t.yushu.im/v2/book/search?q={}&count={}&start={}"
 
-    @classmethod
-    def search_by_isbn(cls, isbn):
-        url = cls.search_by_isbn_url.format(isbn)
-        return HTTP.get(url)
+    def __init__(self):
+        self.total = 0
+        self.books = []
 
-    @classmethod
-    def search_by_key(cls, q, page=1):
-        url = cls.search_by_key_url.format(q, current_app.config["PRE_PAGE"],
-                                           cls.calculate_start(page))
-        return HTTP.get(url)
+    def search_by_isbn(self, isbn):
+        url = self.search_by_isbn_url.format(isbn)
+        result = HTTP.get(url)
+        self.__fill_single(result)
 
-    @staticmethod
-    def calculate_start(page):
+    def search_by_key(self, q, page=1):
+        url = self.search_by_key_url.format(q, current_app.config["PRE_PAGE"],
+                                           self.__calculate_start(page))
+        result = HTTP.get(url)
+        self.__fill_collection(result)
+
+    def __fill_single(self, data):
+        if data:
+            self.books = [data]
+            self.total = 1
+
+    def __fill_collection(self, data):
+        self.books = data['books']
+        self.total = data['total']
+
+    def __calculate_start(self, page):
         return (page-1) * current_app.config["PRE_PAGE"]
