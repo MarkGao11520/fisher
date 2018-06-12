@@ -1,16 +1,15 @@
 """
-create by gaowenfeng on 
+create by gaowenfeng on
 """
 
 from sqlalchemy import Column, Integer, String
-from flask_sqlalchemy import SQLAlchemy
+
+from app.models.base import Base
 
 __author__ = "gaowenfeng"
 
-db = SQLAlchemy()
 
-
-class Book(db.Model):
+class Book(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String(50), nullable=True)
     author = Column(String(30), default="未名")
