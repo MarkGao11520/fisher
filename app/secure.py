@@ -9,3 +9,5 @@ PORT = 8090
 
 SQLALCHEMY_DATABASE_URI = "mysql+cymysql://root:root@localhost:3306/fisher"
 SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+SECRET_KEY = "AIJD1314"

@@ -5,7 +5,7 @@ __author__ = "gaowenfeng"
 
 
 def create_app():
-    app = Flask(__name__,)
+    app = Flask(__name__)
     app.config.from_object("app.secure")
     app.config.from_object("app.settings")
     register_blueprint(app)

@@ -1,12 +1,11 @@
 """
 create by  gaowenfeng on  2018/6/1
 """
-from flask import jsonify, request
+from flask import  request, render_template, flash
 from app.libs.helper import is_isbn_or_key
-from app.spider.yushu_book import YuShuBook
 from app.forms.book import SearchForm
-from app.view_models.book import BookCollection
-import json
+from app.spider.yushu_book import YuShuBook
+from app.view_models.book import BookCollection, BookViewModel
 
 from . import web
 
@@ -20,20 +19,29 @@ def search():
     搜索书籍路由
     """
     form = SearchForm(request.args)
-    if not form.validate():
-        return jsonify(form.errors)
-
-    q = form.q.data.strip()
-    isbn_or_key = is_isbn_or_key(q)
-
     books = BookCollection()
-    yushu_book = YuShuBook()
+    if form.validate():
+        q = form.q.data.strip()
+        isbn_or_key = is_isbn_or_key(q)
 
-    if isbn_or_key == 'isbn':
-        yushu_book.search_by_isbn(q)
+        yushu_book = YuShuBook()
+
+        if isbn_or_key == 'isbn':
+            yushu_book.search_by_isbn(q)
+        else:
+            page = form.page.data
+            yushu_book.search_by_key(q, page)
+
+        books.fill(yushu_book, q)
     else:
-        page = form.page.data
-        yushu_book.search_by_key(q, page)
+        flash("搜索的关键字不符合要求，请重新输入关键字")
 
-    books.fill(yushu_book, q)
-    return json.dumps(books, default=lambda o: o.__dict__)
+    return render_template("search_result.html", books=books)
+
+
+@web.route("/book/<isbn>/detail")
+def book_detail(isbn):
+    yushu_book = YuShuBook()
+    yushu_book.search_by_isbn(isbn)
+    book = BookViewModel(yushu_book.first)
+    return render_template("book_detail.html", book=book, wishes=[], gifts=[])
