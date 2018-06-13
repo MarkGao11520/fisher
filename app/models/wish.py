@@ -9,9 +9,9 @@ from sqlalchemy.orm import relationship
 __author__ = "gaowenfeng"
 
 
-class Gift(Base):
+class Wish(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
-    uid = Column(Integer, ForeignKey('user.id'), nullable=False)
     user = relationship('User')
-    isbn = Column(String(13))
+    uid = Column(Integer, ForeignKey('user.id'))
+    isbn = Column(String(15), nullable=True)
     launched = Column(Boolean, default=False)

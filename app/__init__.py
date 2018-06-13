@@ -23,6 +23,8 @@ def create_app():
 
     # 注册LoginManager
     login_manager.init_app(app)
+    login_manager.login_view = 'web.login'
+    login_manager.login_message = '请先登录或注册'
     return app
 
 
