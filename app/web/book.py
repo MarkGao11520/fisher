@@ -4,7 +4,7 @@ create by  gaowenfeng on  2018/6/1
 from flask import  request, render_template, flash
 from flask_login import current_user
 
-from app.forms.trade import TradeInfo
+from app.view_models.trade import TradeInfo
 from app.libs.helper import is_isbn_or_key
 from app.forms.book import SearchForm
 from app.models.gift import Gift
@@ -53,8 +53,8 @@ def book_detail(isbn):
     book = BookViewModel(yushu_book.first)
 
     # 三种情况的判断
-    has_in_gifts = current_user.is_authenticated and current_user.has_in_gifts
-    has_in_wishs = current_user.is_authenticated and current_user.has_in_wishs
+    has_in_gifts = current_user.is_authenticated and current_user.has_in_gifts(isbn)
+    has_in_wishes = current_user.is_authenticated and current_user.has_in_wishs(isbn)
 
     # 赠书人列表和索要人列表
     trade_gifts = Gift.query.filter_by(isbn=isbn).all()
@@ -64,4 +64,4 @@ def book_detail(isbn):
     trade_gifts_model = TradeInfo(trade_gifts)
     return render_template("book_detail.html", book=book,
                            wishes=trade_wishs_model, gifts=trade_gifts_model,
-                           has_in_wishs=has_in_wishs, has_in_gifts=has_in_gifts)
+                           has_in_wishes=has_in_wishes, has_in_gifts=has_in_gifts)

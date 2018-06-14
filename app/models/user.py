@@ -64,13 +64,11 @@ class User(UserMixin, Base):
         wishing = Wish.query.filter_by(uid=self.id, isbn=isbn, launched=False).first()
         return not wishing and not gifting
 
-    @property
-    def has_in_gifts(self):
-        return Gift.query.filter_by(uid=self.id).first() is not None
+    def has_in_gifts(self, isbn):
+        return Gift.query.filter_by(uid=self.id, isbn=isbn).first() is not None
 
-    @property
-    def has_in_wishs(self):
-        return Wish.query.filter_by(uid=self.id).first() is not None
+    def has_in_wishs(self, isbn):
+        return Wish.query.filter_by(uid=self.id, isbn=isbn).first() is not None
 
     @login_manager.user_loader
     def get_user(uid):
