@@ -45,6 +45,9 @@ class Base(db.Model):
             if hasattr(self, key) and key != 'id':
                 setattr(self, key, value)
 
+    def delete(self):
+        self.status = 0
+
     @property
     def create_datetime(self):
         if self.create_time:

@@ -3,6 +3,8 @@ create by gaowenfeng on
 """
 
 from sqlalchemy import Column, String, Integer , SmallInteger
+
+from app.libs.enums import PendingStatus
 from app.models.base import Base
 
 __author__ = "gaowenfeng"
@@ -36,4 +38,14 @@ class Drift(Base):
     gifter_id = Column(Integer)
     gift_id = Column(Integer)
     gifter_nickname = Column(String(20))
-    pending = Column('pending', SmallInteger, default=1)
+
+    # 状态
+    _pending = Column('pending', SmallInteger, default=1)
+
+    @property
+    def pending(self):
+        return PendingStatus(self._pending)
+
+    @pending.setter
+    def pending(self, status):
+        self._pending = status.value
