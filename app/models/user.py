@@ -1,7 +1,12 @@
+from flask import current_app
 from werkzeug.security import generate_password_hash,check_password_hash
+
+from app.libs.enums import PendingStatus
+from app.models.drift import Drift
 
 __author__ = 'gaowenfeng'
 
+from math import floor
 from sqlalchemy import Column
 from sqlalchemy import Integer, Float
 from sqlalchemy import String, Boolean
@@ -11,8 +16,9 @@ from app.spider.yushu_book import YuShuBook
 from app.models.wish import Wish
 from app.models.gift import Gift
 
-from app.models.base import Base
+from app.models.base import Base, db
 from app import login_manager
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 class User(UserMixin, Base):
@@ -35,6 +41,15 @@ class User(UserMixin, Base):
     @password.setter
     def password(self, raw):
         self._password = generate_password_hash(raw)
+
+    @property
+    def summary(self):
+        return dict(
+            nikename=self.nickname,
+            beans=self.beans,
+            email=self.email,
+            send_receive=str(self.send_counter) + '/' + str(self.receive_counter)
+        )
 
     def check_password(self, raw):
         if not self._password:
@@ -64,6 +79,16 @@ class User(UserMixin, Base):
         wishing = Wish.query.filter_by(uid=self.id, isbn=isbn, launched=False).first()
         return not wishing and not gifting
 
+    def can_send_drifts(self):
+        if self.beans < 1:
+            return False
+        success_gift_count = Gift.query.filter_by(
+            uid=self.id, launched=True).count()
+        success_receive_count = Drift.query.filter_by(
+            requester_id=self.id, pending=PendingStatus.Success).count()
+
+        return floor(success_receive_count / 2) <= success_gift_count
+
     def has_in_gifts(self, isbn):
         return Gift.query.filter_by(uid=self.id, isbn=isbn).first() is not None
 
@@ -73,3 +98,21 @@ class User(UserMixin, Base):
     @login_manager.user_loader
     def get_user(uid):
         return User.query.get(int(uid))
+
+    def generate_token(self, expiration=600):
+        s = Serializer(secret_key=current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id}).decode('utf-8')
+
+    @classmethod
+    def reset_password(cls, token, new_password):
+        s = Serializer(secret_key=current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token.encode('utf-8'))
+        except:
+            return False
+
+        uid = data.get('id')
+        with db.auto_commit():
+            user = User.query.get_or_404(uid)
+            user.password = new_password
+        return True
